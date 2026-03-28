@@ -1,160 +1,47 @@
+<!-- vegetables.html -->
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>سوق دارك</title>
-<style>
-body { font-family: Arial; max-width: 500px; margin:auto; }
-select, input[type=number] { padding:5px; margin:3px 0; }
-.productRow { margin-bottom:10px; border: 1px solid #ddd; padding:10px; border-radius:5px; }
-button { padding:5px 10px; margin-left:5px; }
-</style>
+  <meta charset="UTF-8">
+  <title>قائمة الخضار</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: green; }
+    .product { margin: 10px 0; }
+    .buy { margin-left: 10px; cursor: pointer; color: blue; }
+  </style>
 </head>
 <body>
+  <h1>قائمة الخضار</h1>
+  <div id="products"></div>
+  <h2>إجمالي الطلب: $<span id="total">0</span></h2>
 
-<h2 style="text-align:center; color:green;">🥬 سوق دارك</h2>
-<p style="text-align:center;">اختر المنتج والكمية ثم اضغط ➕ لإضافة منتج آخر 🛒</p>
+  <script>
+    // ======= العميل يغير الأسعار هنا =======
+    const products = [
+      {name: "طماطم", price: 2},
+      {name: "خيار", price: 1.5},
+      {name: "جزر", price: 1},
+      {name: "بطاطس", price: 2.5}
+    ];
 
-<hr>
+    const container = document.getElementById('products');
+    const totalSpan = document.getElementById('total');
+    let total = 0;
 
-<div id="productSection">
-  <div class="productRow">
-    <label>🏷 الفئة:</label>
-    <select class="categorySelect" onchange="updateProductOptions(this)">
-      <option value="">اختر الفئة</option>
-      <option value="vegetables">خضروات</option>
-      <option value="fruits">فواكه</option>
-      <option value="herbs">حشائش</option>
-    </select>
-
-    <label>🛒 المنتج:</label>
-    <select class="productSelect">
-      <option value="">اختر المنتج</option>
-    </select>
-
-    <button onclick="addRow(this)">➕ منتج آخر</button>
-    <button onclick="changeQty(this, -0.1)">➖</button>
-    <input type="number" class="qtyInput" value="0" step="0.1" min="0" style="width:60px; text-align:center;">
-    <button onclick="changeQty(this, 0.1)">➕</button>
-  </div>
-</div>
-
-<br>
-<button onclick="addToCart()">🛒 إضافة كل المنتجات للسلة</button>
-
-<hr>
-
-<h3>🛒 طلبك:</h3>
-<ul id="cart"></ul>
-
-<hr>
-
-<h3>📍 معلوماتك:</h3>
-<input type="text" id="name" placeholder="الاسم" style="width:100%;"><br><br>
-<input type="text" id="phoneUser" placeholder="رقم الهاتف" style="width:100%;"><br><br>
-<input type="text" id="address" placeholder="العنوان" style="width:100%;">
-
-<br><br>
-
-<div style="text-align:center;">
-<button onclick="sendOrder()" style="background:#25D366; color:white; padding:15px; border:none;">
-📲 إرسال الطلب
-</button>
-</div>
-
-<script>
-var cart = [];
-
-var products = {
-  vegetables: ["طماطم","بطاطا","بصل","فلفل","جزر"],
-  fruits: ["تفاح","موز","برتقال","عنب","كيوي"],
-  herbs: ["بقدونس","كزبرة","نعناع","ريحان"]
-};
-
-function updateProductOptions(categorySelect){
-  var row = categorySelect.parentElement;
-  var productSelect = row.querySelector(".productSelect");
-  var category = categorySelect.value;
-
-  productSelect.innerHTML = "<option value=''>اختر المنتج</option>";
-  if(category && products[category]){
-    products[category].forEach(function(item){
-      var opt = document.createElement("option");
-      opt.value = item;
-      opt.textContent = item;
-      productSelect.appendChild(opt);
+    products.forEach((p, index) => {
+      const div = document.createElement('div');
+      div.className = "product";
+      div.innerHTML = `${p.name} - السعر: $${p.price} 
+                       <span class="buy" onclick="buy(${index})">أضف للطلب</span>`;
+      container.appendChild(div);
     });
-  }
-}
 
-function changeQty(btn, change){
-  var input = btn.parentElement.querySelector(".qtyInput");
-  var value = parseFloat(input.value) || 0;
-  value += change;
-  if(value < 0) value = 0;
-  input.value = value.toFixed(1);
-}
-
-function addRow(btn){
-  var row = btn.parentElement;
-  var newRow = row.cloneNode(true);
-  newRow.querySelector(".qtyInput").value = 0;
-  newRow.querySelector(".productSelect").value = "";
-  document.getElementById("productSection").appendChild(newRow);
-}
-
-function addToCart(){
-  var rows = document.querySelectorAll(".productRow");
-  rows.forEach(function(row){
-    var category = row.querySelector(".categorySelect").value;
-    var product = row.querySelector(".productSelect").value;
-    var qty = parseFloat(row.querySelector(".qtyInput").value);
-    if(product && qty > 0){
-      cart.push("[" + category + "] " + product + " - " + qty.toFixed(1) + " كغ");
+    function buy(index) {
+      total += products[index].price;
+      totalSpan.textContent = total.toFixed(2);
+      alert(`تم إضافة ${products[index].name} إلى الطلب!`);
     }
-  });
-  displayCart();
-  var allRows = document.querySelectorAll(".productRow");
-  allRows.forEach(function(row){
-    row.querySelector(".categorySelect").value = "";
-    row.querySelector(".productSelect").innerHTML = "<option value=''>اختر المنتج</option>";
-    row.querySelector(".qtyInput").value = 0;
-  });
-}
-
-function displayCart(){
-  var list = document.getElementById("cart");
-  list.innerHTML = "";
-  cart.forEach(function(item, index){
-    var li = document.createElement("li");
-    li.textContent = item + " ";
-    var delBtn = document.createElement("button");
-    delBtn.textContent = "❌";
-    delBtn.onclick = function(){ cart.splice(index,1); displayCart(); };
-    li.appendChild(delBtn);
-    list.appendChild(li);
-  });
-}
-
-function sendOrder(){
-  var name = document.getElementById("name").value;
-  var phoneUser = document.getElementById("phoneUser").value;
-  var address = document.getElementById("address").value;
-
-  var message = "طلب جديد:%0A";
-  cart.forEach(function(item){
-    message += item + "%0A";
-  });
-
-  message += "%0Aالاسم: " + name;
-  message += "%0Aالهاتف: " + phoneUser;
-  message += "%0Aالعنوان: " + address;
-
-  var phone = "213663041948";
-  var url = "https://wa.me/" + phone + "?text=" + message;
-  window.open(url);
-}
-</script>
-
+  </script>
 </body>
 </html>
