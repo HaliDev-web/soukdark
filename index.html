@@ -2,48 +2,16 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>قائمة الخضار</title>
+  <title>المتجر الرئيسي</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    h1 { color: green; }
-    .product { margin: 10px 0; }
-    .buy { margin-left: 10px; cursor: pointer; color: blue; }
+    h1 { color: darkorange; }
+    a { font-size: 20px; color: blue; text-decoration: none; }
   </style>
 </head>
 <body>
-  <h1>قائمة الخضار</h1>
-  <div id="products"></div>
-  <h2>إجمالي الطلب: $<span id="total">0</span></h2>
-
-  <script>
-    // المنتجات مع الأسعار (يمكن تعديلها)
-    const products = [
-      {name: "طماطم", price: 2},
-      {name: "خيار", price: 1.5},
-      {name: "جزر", price: 1},
-      {name: "بطاطس", price: 2.5}
-    ];
-
-    // العناصر في الصفحة
-    const container = document.getElementById('products');
-    const totalSpan = document.getElementById('total');
-    let total = 0;
-
-    // إنشاء عناصر المنتجات
-    products.forEach((p, index) => {
-      const div = document.createElement('div');
-      div.className = "product";
-      div.innerHTML = `${p.name} - السعر: $${p.price} 
-                       <span class="buy" onclick="buy(${index})">أضف للطلب</span>`;
-      container.appendChild(div);
-    });
-
-    // دالة إضافة للسلة وحساب السعر
-    function buy(index) {
-      total += products[index].price;
-      totalSpan.textContent = total.toFixed(2);
-      alert(`تم إضافة ${products[index].name} إلى الطلب!`);
-    }
-  </script>
+  <h1>مرحبًا في متجرنا</h1>
+  <p>لتصفح قائمة الخضار والأسعار، اضغطي الرابط أدناه:</p>
+  <a href="vegetables.html">قائمة الخضار</a>
 </body>
 </html>
