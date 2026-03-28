@@ -2,10 +2,57 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>صفحة الفواكه</title>
+  <title>قائمة الخضار</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: green; }
+    .product { margin: 10px 0; }
+    .buy { margin-left: 10px; cursor: pointer; color: blue; }
+    input[type=number] { width: 50px; }
+  </style>
 </head>
 <body>
-  <h1>مرحبا بكم في صفحة الفواكه</h1>
-  <p>يمكنك وضع قائمة الفواكه والأسعار هنا</p>
+  <h1>قائمة الخضار</h1>
+  <div id="products"></div>
+  <h2>إجمالي الطلب: $<span id="total">0</span></h2>
+
+  <script>
+    // ======= العميل يغير الأسعار هنا =======
+    const products = [
+      {name: "طماطم", price: 2},
+      {name: "خيار", price: 1.5},
+      {name: "جزر", price: 1},
+      {name: "بطاطس", price: 2.5}
+    ];
+
+    const container = document.getElementById('products');
+    const totalSpan = document.getElementById('total');
+    let total = 0;
+
+    // إنشاء عناصر المنتجات
+    products.forEach((p, index) => {
+      const div = document.createElement('div');
+      div.className = "product";
+      div.innerHTML = `
+        ${p.name} - السعر: $${p.price} 
+        الكمية: <input type="number" id="qty${index}" value="0" min="0">
+        <span class="buy" onclick="buy(${index})">أضف للطلب</span>
+      `;
+      container.appendChild(div);
+    });
+
+    function buy(index) {
+      const qty = parseInt(document.getElementById(`qty${index}`).value);
+      if (qty > 0) {
+        const subtotal = qty * products[index].price;
+        total += subtotal;
+        totalSpan.textContent = total.toFixed(2);
+        alert(`تم إضافة ${qty} × ${products[index].name} إلى الطلب!`);
+        document.getElementById(`qty${index}`).value = 0; // إعادة تعيين الكمية
+      } else {
+        alert("الرجاء إدخال كمية أكبر من صفر");
+      }
+    }
+  </script>
 </body>
 </html>
